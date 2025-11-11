@@ -14,7 +14,7 @@ See https://gist.github.com/TheCurle/fe7ad3ede188cbdd15c235cc75d52d4a for more i
 #################################################
 Version string 'V1' does not match SemVer specification 
 You should try SemVer : http://semver.org/
-:clean UP-TO-DATE
+:clean
 :deobfCompileDummyTask
 :getVersionJson
 :extractUserdev UP-TO-DATE
@@ -58,4 +58,4 @@ remapping source...
 
 BUILD SUCCESSFUL
 
-Total time: 13.457 secs
+Total time: 11.868 secs

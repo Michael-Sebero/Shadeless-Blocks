@@ -59,7 +59,7 @@ public class ShadelessBlocks {
         int processedModels = 0;
         
         for (ModelResourceLocation key : event.getModelRegistry().getKeys()) {
-            // Skip item models (inventory variants)
+            // Skip item models (inventory variants) - don't wrap them at all
             if (key.getVariant().equals("inventory")) {
                 continue;
             }
