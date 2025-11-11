@@ -1,2 +1,3 @@
 # Shadeless Blocks
- Placeholder
+
+Inspired by https://legacy.curseforge.com/minecraft/texture-packs/no-block-shading-legacy
