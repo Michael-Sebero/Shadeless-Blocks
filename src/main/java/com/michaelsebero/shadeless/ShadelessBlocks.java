@@ -49,7 +49,7 @@ public class ShadelessBlocks {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onModelBake(ModelBakeEvent event) {
-        System.out.println("[ShadelessBlocks] Removing shading from all models...");
+        System.out.println("[ShadelessBlocks] Removing shading from block models...");
         
         if (bakedQuadConstructor == null) {
             System.err.println("[ShadelessBlocks] Cannot proceed - BakedQuad constructor not found!");
@@ -59,6 +59,11 @@ public class ShadelessBlocks {
         int processedModels = 0;
         
         for (ModelResourceLocation key : event.getModelRegistry().getKeys()) {
+            // Skip item models (inventory variants)
+            if (key.getVariant().equals("inventory")) {
+                continue;
+            }
+            
             IBakedModel originalModel = event.getModelRegistry().getObject(key);
             if (originalModel != null) {
                 IBakedModel shadelessModel = new ShadelessModelWrapper(originalModel);
@@ -67,7 +72,7 @@ public class ShadelessBlocks {
             }
         }
         
-        System.out.println("[ShadelessBlocks] Processed " + processedModels + " models!");
+        System.out.println("[ShadelessBlocks] Processed " + processedModels + " block models!");
     }
     
     public static BakedQuad createShadelessQuad(BakedQuad original) {
