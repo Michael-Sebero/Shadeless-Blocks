@@ -30,12 +30,20 @@ public class ShadelessBlocks {
     // Only blacklist mods that are truly incompatible
     private static final Set<String> BLACKLISTED_MODS = new HashSet<>();
     
+    // Whitelist for known compatible custom model classes
+    private static final Set<String> WHITELISTED_MODELS = new HashSet<>();
+    
     static {
         // Only add mods that have serious compatibility issues
         BLACKLISTED_MODS.add("gregtech");
         BLACKLISTED_MODS.add("appliedenergistics2");
         BLACKLISTED_MODS.add("ae2");
         BLACKLISTED_MODS.add("ic2");
+        
+        // Add Dynamic Trees models
+        WHITELISTED_MODELS.add("BakedModelBlockBranchBasic");
+        WHITELISTED_MODELS.add("BakedModelBlockBranchThick");
+        WHITELISTED_MODELS.add("BakedModelBlockBranchCactus");
         
         try {
             Class<?> bakedQuadClass = BakedQuad.class;
@@ -106,9 +114,15 @@ public class ShadelessBlocks {
     
     private boolean isSafeToWrap(IBakedModel model, ModelResourceLocation location) {
         String className = model.getClass().getName();
+        String simpleClassName = model.getClass().getSimpleName();
+        
+        // Check whitelist first - explicitly allowed models
+        if (WHITELISTED_MODELS.contains(simpleClassName)) {
+            System.out.println("[ShadelessBlocks] Whitelisted model: " + simpleClassName + " for " + location);
+            return true;
+        }
         
         // Skip models with custom implementations (non-vanilla model classes)
-        String simpleClassName = model.getClass().getSimpleName();
         if (!simpleClassName.equals("SimpleBakedModel") && 
             !simpleClassName.equals("WeightedBakedModel") &&
             !simpleClassName.equals("MultipartBakedModel") &&
