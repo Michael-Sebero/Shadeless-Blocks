@@ -23,7 +23,7 @@ public class ShadelessBlocks {
     
     public static final String MODID = "shadelessblocks";
     public static final String NAME = "Shadeless Blocks";
-    public static final String VERSION = "1.4";
+    public static final String VERSION = "1.5";
     
     private static Constructor<?> bakedQuadConstructor;
     
@@ -35,7 +35,7 @@ public class ShadelessBlocks {
     
     static {
         // Only add mods that have serious compatibility issues
-        BLACKLISTED_MODS.add("gregtech");
+        // GregTech removed - blocks work fine, items are already skipped via inventory check
         BLACKLISTED_MODS.add("appliedenergistics2");
         BLACKLISTED_MODS.add("ae2");
         BLACKLISTED_MODS.add("ic2");
@@ -79,7 +79,7 @@ public class ShadelessBlocks {
         int skippedModels = 0;
         
         for (ModelResourceLocation key : event.getModelRegistry().getKeys()) {
-            // Skip item models (inventory variants)
+            // Skip item models (inventory variants) - this prevents GregTech items from being affected
             if (key.getVariant().equals("inventory")) {
                 continue;
             }
@@ -115,10 +115,26 @@ public class ShadelessBlocks {
     private boolean isSafeToWrap(IBakedModel model, ModelResourceLocation location) {
         String className = model.getClass().getName();
         String simpleClassName = model.getClass().getSimpleName();
+        String resourceDomain = location.getResourceDomain();
         
         // Check whitelist first - explicitly allowed models
         if (WHITELISTED_MODELS.contains(simpleClassName)) {
             System.out.println("[ShadelessBlocks] Whitelisted model: " + simpleClassName + " for " + location);
+            return true;
+        }
+        
+        // Allow all GregTech models - they support shadeless rendering
+        if (resourceDomain.equals("gregtech")) {
+            System.out.println("[ShadelessBlocks] Processing GregTech model: " + simpleClassName + " for " + location);
+            // Still skip built-in renderers for GregTech
+            try {
+                if (model.isBuiltInRenderer()) {
+                    System.out.println("[ShadelessBlocks] Skipping GregTech built-in renderer for " + location);
+                    return false;
+                }
+            } catch (Exception e) {
+                return false;
+            }
             return true;
         }
         
